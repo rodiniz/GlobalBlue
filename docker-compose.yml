@@ -1,0 +1,14 @@
+version: '3.4'
+
+services:
+  globalblue.api:
+    image: ${DOCKER_REGISTRY-}globalblueapi
+    build:
+      context: .
+      dockerfile: GlobalBlue.Api/Dockerfile
+  db:
+    image: "mcr.microsoft.com/mssql/server:2017-latest"
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=yourStrong(!)Password
+    network_mode: "host"
