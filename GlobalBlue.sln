@@ -13,6 +13,8 @@ Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-co
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GlobalBlue.Api.Tests", "GlobalBlue.Api.Tests\GlobalBlue.Api.Tests.csproj", "{8C81021E-4FD2-4BD5-A754-C5807BA6281A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GlobaBlue.Infrastructure.Tests", "GlobaBlue.Infrastructure.Tests\GlobaBlue.Infrastructure.Tests.csproj", "{67F3057C-5C63-4A14-8995-222EC430D418}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{8C81021E-4FD2-4BD5-A754-C5807BA6281A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8C81021E-4FD2-4BD5-A754-C5807BA6281A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8C81021E-4FD2-4BD5-A754-C5807BA6281A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{67F3057C-5C63-4A14-8995-222EC430D418}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{67F3057C-5C63-4A14-8995-222EC430D418}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{67F3057C-5C63-4A14-8995-222EC430D418}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{67F3057C-5C63-4A14-8995-222EC430D418}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
