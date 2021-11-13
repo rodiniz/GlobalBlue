@@ -9,6 +9,7 @@ using NSubstitute;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace GlobalBlue.Api.Tests
@@ -59,7 +60,7 @@ namespace GlobalBlue.Api.Tests
         }
 
         [Fact]
-        public void Should_call_update_when_put_is_called()
+        public async Task Should_call_update_when_put_is_called()
         {
             // Arrange
             var customer = fixture.Create<CustomerDto>();
@@ -67,17 +68,17 @@ namespace GlobalBlue.Api.Tests
           
             // Act          
 
-            var result = controller.Put(customer);
+            var result = await controller.Put(customer);
 
             // Assert
 
             result.Should().BeOfType<OkResult>();
-            _service.Received(1).Update(customer);
+            await _service.Received(1).Update(customer);
            
         }
 
         [Fact]
-        public void Should_call_create_when_post_is_called()
+        public async Task Should_call_create_when_post_is_called()
         {
             // Arrange
             var customer = fixture.Create<CustomerDto>();
@@ -85,12 +86,12 @@ namespace GlobalBlue.Api.Tests
 
             // Act          
 
-            var result = controller.Post(customer);
+            var result = await controller.Post(customer);
 
             // Assert
 
-            result.Should().BeOfType<OkResult>();
-            _service.Received(1).Create(customer);
+            result.Should().BeOfType<OkObjectResult>();
+            await _service.Received(1).Create(customer);
 
         }
 

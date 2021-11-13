@@ -7,14 +7,13 @@ namespace GlobalBlue.Infrastructure.Repository
     {
         T Get(int id);
 
-        void Create(T entity);
+        Task<T> Create(T entity);
 
-        void Delete(int id);
+        Task Delete(int id);
 
-        void Delete(T entity);
+        Task Delete(T entity);
 
-        void Update(T entity);
-        Task SaveChanges();
+        Task Update(T entity);     
 
         IQueryable<T> Query();
     }

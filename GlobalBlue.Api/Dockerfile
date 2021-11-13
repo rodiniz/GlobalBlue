@@ -1,5 +1,4 @@
 #See https://aka.ms/containerfastmode to understand how Visual Studio uses this Dockerfile to build your images for faster debugging.
-
 FROM mcr.microsoft.com/dotnet/aspnet:3.1 AS base
 WORKDIR /app
 EXPOSE 80
@@ -22,3 +21,7 @@ FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "GlobalBlue.Api.dll"]
+
+COPY wait-for-it.sh wait-for-it.sh
+# Make it executable, in Linux
+RUN chmod +x wait-for-it.sh

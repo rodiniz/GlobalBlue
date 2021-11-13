@@ -8,7 +8,7 @@ namespace GlobalBlue.Infrastructure.Services
 
         T Get(int id);
 
-        Task Create(T entity);
+        Task<T> Create(T entity);
 
         Task Update(T entity);
 

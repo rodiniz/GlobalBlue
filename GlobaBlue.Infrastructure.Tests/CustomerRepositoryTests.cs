@@ -17,20 +17,14 @@ namespace GlobaBlue.Infrastructure.Tests
     public class CustomerRepositoryTests
     {
         private readonly Fixture fixture;
-        private readonly CustomerRepository _repository;
         private DataContext context;
-        private readonly IMapper mapper;
+       
 
         public CustomerRepositoryTests()
         {
             fixture = new Fixture();
             
-            var mockMapper = new MapperConfiguration(cfg =>
-            {
-                cfg.AddProfile(new CustomerProfile());
-            });
-            mapper = mockMapper.CreateMapper();
-
+         
             var builder = new DbContextOptionsBuilder<DataContext>()
                 .UseInMemoryDatabase(Guid.NewGuid().ToString());
 
@@ -60,14 +54,17 @@ namespace GlobaBlue.Infrastructure.Tests
         [Fact]
         public async Task Should_create_new_customer()
         {
-            var customer = fixture.Create<Customer>();
+            var customer = fixture.Build<Customer>()
+                                  .Without(c=>c.Id)
+                                  .Create();
            
             var customerRepository = new CustomerRepository(context);
 
             // Act
-            customerRepository.Create(customer);
-            await customerRepository.SaveChanges();
-            //Assert
+            var created=await customerRepository.Create(customer);
+
+            //Assert    
+            Assert.NotEqual(0, created.Id);
             context.Customers.SingleOrDefault(c=>c.FirstName== customer.FirstName).Should().Be(customer);
 
         }
@@ -80,13 +77,12 @@ namespace GlobaBlue.Infrastructure.Tests
             var customerRepository = new CustomerRepository(context);
 
             // Act
-            customerRepository.Create(customer);
-            await customerRepository.SaveChanges();
+            await customerRepository.Create(customer);           
 
             customer.FirstName= fixture.Create<string>();
 
-            customerRepository.Update(customer);
-            await customerRepository.SaveChanges();
+            await customerRepository.Update(customer);
+       
             //Assert
             context.Customers.SingleOrDefault(c => c.FirstName == customer.FirstName).Should().Be(customer);
 
@@ -100,11 +96,11 @@ namespace GlobaBlue.Infrastructure.Tests
             var customerRepository = new CustomerRepository(context);
 
             // Act
-            customerRepository.Create(customer);
-            await customerRepository.SaveChanges();
+            await customerRepository.Create(customer);
+            
             var db= context.Customers.SingleOrDefault(c => c.FirstName == customer.FirstName);
-            customerRepository.Delete(db.Id);
-            await customerRepository.SaveChanges();
+            await customerRepository.Delete(db.Id);
+            
             //Assert
             context.Customers.SingleOrDefault(c => c.FirstName == customer.FirstName).Should().BeNull();
         }

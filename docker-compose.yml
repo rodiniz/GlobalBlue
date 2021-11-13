@@ -6,9 +6,14 @@ services:
     build:
       context: .
       dockerfile: GlobalBlue.Api/Dockerfile
+    depends_on:
+      - db
+    entrypoint: ["/wait-for-it.sh", "db:1433", "-t", "120", "--", "dotnet", "GlobalBlue.Api.dll"]
+
   db:
     image: "mcr.microsoft.com/mssql/server:2017-latest"
     environment:
       - ACCEPT_EULA=Y
       - SA_PASSWORD=yourStrong(!)Password
-    network_mode: "host"
+    ports:
+      - "${DOCKER_SQL_PORT:-1433}:1433"

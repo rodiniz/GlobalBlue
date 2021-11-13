@@ -3,6 +3,7 @@ using GlobalBlue.Infrastructure.Services;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace GlobalBlue.Api.Controllers
 {
@@ -30,15 +31,18 @@ namespace GlobalBlue.Api.Controllers
         [Route("Get")]
         public ActionResult<CustomerDto> Get(int id)
         {
-            return Ok(_service.Get(id));
+
+            var ret= _service.Get(id);
+
+            return ret == null ? NotFound() as ActionResult: Ok(ret);
         }
         [Route("update")]
         [HttpPut]
-        public ActionResult Put([FromBody] CustomerDto model)
+        public async Task<IActionResult> Put([FromBody] CustomerDto model)
         {
             try
             {
-                _service.Update(model);
+                await _service.Update(model);
             }
             catch (Exception ex)
             {
@@ -51,13 +55,13 @@ namespace GlobalBlue.Api.Controllers
 
         [Route("create")]
         [HttpPost]
-        public IActionResult Post([FromBody] CustomerDto model)
+        public async Task<IActionResult> Post([FromBody] CustomerDto model)
         {
             try
             {
 
-                _service.Create(model);
-                return Ok();
+                var created=await _service.Create(model);
+                return Ok(created);
             }
             catch (Exception ex)
             {
@@ -71,11 +75,11 @@ namespace GlobalBlue.Api.Controllers
         }
 
         [HttpDelete]
-        public virtual IActionResult Delete(int id)
+        public async Task<IActionResult>  Delete(int id)
         {
             try
             {
-                _service.Delete(id);
+                await _service.Delete(id);
             }
             catch (Exception ex)
             {

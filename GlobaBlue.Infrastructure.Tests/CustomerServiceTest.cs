@@ -38,8 +38,8 @@ namespace GlobaBlue.Infrastructure.Tests
             await customerService.Create(model);
 
             // Assert
-            _repository.Received(1).Create(Arg.Any<Customer>());
-            await _repository.Received(1).SaveChanges();
+            await _repository.Received(1).Create(Arg.Any<Customer>());
+    
         }
 
         [Fact]
@@ -53,8 +53,8 @@ namespace GlobaBlue.Infrastructure.Tests
             await customerService.Update(model);
 
             // Assert
-            _repository.Received(1).Update(Arg.Any<Customer>());
-            await _repository.Received(1).SaveChanges();
+            await _repository.Received(1).Update(Arg.Any<Customer>());
+           
         }
 
         [Fact]
@@ -68,8 +68,8 @@ namespace GlobaBlue.Infrastructure.Tests
             await customerService.Delete(id);
 
             // Assert
-            _repository.Received(1).Delete(id);
-            await _repository.Received(1).SaveChanges();
+            await _repository.Received(1).Delete(id);
+            
         }
     }
 }

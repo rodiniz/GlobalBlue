@@ -14,20 +14,25 @@ namespace GlobalBlue.Infrastructure.Repository
             _db = ctx;
         }
 
-        public void Create(T entity)
+        public async Task<T> Create(T entity)
         {
             _db.Set<T>().Add(entity);
+            await _db.SaveChangesAsync();
+            _db.Entry(entity).Reload();
+            return entity;
         }
 
-        public void Delete(int id)
+        public async Task Delete(int id)
         {
             var entity = _db.Set<T>().Find(id);
             _db.Set<T>().Remove(entity);
+            await _db.SaveChangesAsync();
         }
 
-        public void Delete(T entity)
+        public async Task Delete(T entity)
         {
             _db.Set<T>().Remove(entity);
+            await _db.SaveChangesAsync();
         }
 
         public T Get(int id)
@@ -37,15 +42,11 @@ namespace GlobalBlue.Infrastructure.Repository
         public IQueryable<T> Query()
         {
             return _db.Set<T>().AsNoTracking();
-        }
-        public async Task SaveChanges()
-        {
-            await _db.SaveChangesAsync();
-        }
-
-        public void Update(T entity)
+        }       
+        public async Task Update(T entity)
         {
             _db.Entry(entity).State = EntityState.Modified;
+            await _db.SaveChangesAsync();
         }
     }
 }
