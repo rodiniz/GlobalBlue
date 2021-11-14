@@ -42,6 +42,12 @@ namespace GlobalBlue.Api.Controllers
         {
             try
             {
+                var ret = _service.Get(model.Id);
+
+                if(ret == null)
+                {
+                    return NotFound();
+                }
                 await _service.Update(model);
             }
             catch (Exception ex)
