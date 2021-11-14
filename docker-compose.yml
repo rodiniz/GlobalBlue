@@ -1,4 +1,4 @@
-version: '3.4'
+version: '3.7'
 
 services:
   globalblue.api:
@@ -7,13 +7,21 @@ services:
       context: .
       dockerfile: GlobalBlue.Api/Dockerfile
     depends_on:
-      - db
-    entrypoint: ["/wait-for-it.sh", "db:1433", "-t", "120", "--", "dotnet", "GlobalBlue.Api.dll"]
-
+        - "db"   
+    ports:
+     - "5000:5000"
+    networks:
+      - aspnetcoreapp-network
   db:
+    container_name: 'database'
     image: "mcr.microsoft.com/mssql/server:2017-latest"
     environment:
       - ACCEPT_EULA=Y
       - SA_PASSWORD=yourStrong(!)Password
     ports:
       - "${DOCKER_SQL_PORT:-1433}:1433"
+    networks:
+      - aspnetcoreapp-network
+networks:
+    aspnetcoreapp-network:
+        driver: bridge
