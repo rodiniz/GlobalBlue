@@ -18,8 +18,8 @@ jobs:
       with:
         dotnet-version: 5.0.x
     - name: Restore dependencies
-      run: dotnet restore "./GlobalBlue"
+      run: dotnet restore "../GlobalBlue/GlobalBlue.sln"
     - name: Build
-      run: dotnet build  "./GlobalBlue" --no-restore --verbosity normal
+      run: dotnet build  "../GlobalBlue/GlobalBlue.sln" --no-restore --verbosity normal
     - name: Test
       run: dotnet test --no-build --verbosity normal
