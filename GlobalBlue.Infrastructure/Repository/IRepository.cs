@@ -13,7 +13,7 @@ namespace GlobalBlue.Infrastructure.Repository
 
         Task Delete(T entity);
 
-        Task Update(T entity);     
+        Task Update(T entity);
 
         IQueryable<T> Query();
     }

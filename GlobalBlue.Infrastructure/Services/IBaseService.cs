@@ -5,7 +5,6 @@ namespace GlobalBlue.Infrastructure.Services
 {
     public interface IBaseService<T>
     {
-
         T Get(int id);
 
         Task<T> Create(T entity);
@@ -15,6 +14,5 @@ namespace GlobalBlue.Infrastructure.Services
         Task Delete(int idEntity);
 
         List<T> GetAll();
-
     }
 }

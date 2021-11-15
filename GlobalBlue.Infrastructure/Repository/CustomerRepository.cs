@@ -6,10 +6,8 @@ namespace GlobalBlue.Infrastructure.Repository
 {
     public class CustomerRepository : BaseRepository<Customer>, ICustomerRepository
     {
-
         public CustomerRepository(DataContext ctx) : base(ctx)
         {
-
         }
 
         public List<Customer> GetCustomers()

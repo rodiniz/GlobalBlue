@@ -39,10 +39,12 @@ namespace GlobalBlue.Infrastructure.Repository
         {
             return _db.Set<T>().Find(id);
         }
+
         public IQueryable<T> Query()
         {
             return _db.Set<T>().AsNoTracking();
-        }       
+        }
+
         public async Task Update(T entity)
         {
             _db.Entry(entity).State = EntityState.Modified;

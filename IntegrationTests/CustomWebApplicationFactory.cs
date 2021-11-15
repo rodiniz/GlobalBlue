@@ -35,7 +35,7 @@ namespace IntegrationTests
                     var logger = scopedServices
                         .GetRequiredService<ILogger<CustomWebApplicationFactory<TStartup>>>();
 
-                    db.Database.EnsureCreated();                   
+                    db.Database.EnsureCreated();
                 }
             });
         }

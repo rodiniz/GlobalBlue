@@ -1,13 +1,9 @@
 ﻿using AutoFixture;
 using GlobalBlue.Api;
 using GlobalBlue.Dtos;
-using GlobalBlue.Infrastructure.Persistence;
-using Microsoft.AspNetCore.Mvc.Testing;
-using System;
-using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Json;
-using System.Text;
+using System.Net.Mail;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -17,22 +13,23 @@ namespace IntegrationTests
     : IClassFixture<CustomWebApplicationFactory<Startup>>
     {
         private readonly CustomWebApplicationFactory<Startup> _factory;
-        private Fixture _fixture;
+        private readonly Fixture _fixture;
+        private readonly HttpClient _client;
+
         public BasicTests(CustomWebApplicationFactory<Startup> factory)
         {
             _factory = factory;
             _fixture = new Fixture();
+            _client = _factory.CreateClient();
         }
 
         [Theory]
-        [InlineData("/api/Customer/List")]       
+        [InlineData("/api/Customer/List")]
         public async Task Get_EndpointsReturnSuccessAndCorrectContentType(string url)
         {
-            // Arrange
-            var client = _factory.CreateClient();
 
             // Act
-            var response = await client.GetAsync(url);
+            var response = await _client.GetAsync(url);
 
             // Assert
             response.EnsureSuccessStatusCode(); // Status Code 200-299
@@ -43,30 +40,11 @@ namespace IntegrationTests
         [Fact]
         public async Task ShouldCreateCustomer()
         {
-            // Arrange
+            // Arrange          
+            var customer = _fixture.Build<CustomerDto>()
+                  .With(c => c.Email, _fixture.Create<MailAddress>().ToString())
+                  .Create();
 
-            var _client = _factory.CreateClient();
-            var customer = _fixture.Create<CustomerDto>();
-
-            // Act
-            var response = await _client.PostAsJsonAsync("/api/Customer/Create",customer);
-
-            // Assert
-            response.EnsureSuccessStatusCode();
-
-            var created = await response.Content.ReadFromJsonAsync<CustomerDto>();
-
-            Assert.NotEqual(0, created.Id);
-           
-        }
-
-        [Fact]
-        public async Task ShouldCreateUpdateAndDeleteCustomer()
-        {
-            // Arrange
-
-            var _client = _factory.CreateClient();
-            var customer = _fixture.Create<CustomerDto>();
 
             // Act
             var response = await _client.PostAsJsonAsync("/api/Customer/Create", customer);
@@ -76,29 +54,7 @@ namespace IntegrationTests
 
             var created = await response.Content.ReadFromJsonAsync<CustomerDto>();
 
-            // Act
-
-            created.FirstName = _fixture.Create<string>();
-            response = await _client.PutAsJsonAsync("/api/Customer/Update", created);
-
-            // Assert
-            response.EnsureSuccessStatusCode();
-    
-
-
-            response = await _client.GetAsync($"/api/Customer/Get?id={created.Id}");
-            response.EnsureSuccessStatusCode();
-
-            var updated = await response.Content.ReadFromJsonAsync<CustomerDto>();
-            Assert.Equal(updated.FirstName, created.FirstName);
-
-            response = await _client.DeleteAsync($"/api/Customer?id={created.Id}");
-            response.EnsureSuccessStatusCode();
-
-            response = await _client.GetAsync($"/api/Customer/Get?id={created.Id}");
-            Assert.Equal(System.Net.HttpStatusCode.NotFound, response.StatusCode);
-
+            Assert.NotEqual(0, created.Id);
         }
     }
 }
-

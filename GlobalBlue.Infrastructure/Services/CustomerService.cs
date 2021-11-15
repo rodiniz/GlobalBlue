@@ -11,21 +11,22 @@ namespace GlobalBlue.Infrastructure.Services
     {
         private readonly ICustomerRepository _repository;
         private readonly IMapper _mapper;
+
         public CustomerService(ICustomerRepository repository, IMapper mapper)
         {
             _repository = repository;
             _mapper = mapper;
-
         }
+
         public async Task<CustomerDto> Create(CustomerDto model)
         {
-            var entity= await _repository.Create(_mapper.Map<Customer>(model));
+            var entity = await _repository.Create(_mapper.Map<Customer>(model));
             return _mapper.Map<CustomerDto>(entity);
         }
 
         public async Task Delete(int idEntity)
         {
-            await _repository.Delete(idEntity);            
+            await _repository.Delete(idEntity);
         }
 
         public CustomerDto Get(int id)
@@ -40,7 +41,7 @@ namespace GlobalBlue.Infrastructure.Services
 
         public async Task Update(CustomerDto model)
         {
-            await _repository.Update(_mapper.Map<Customer>(model));           
+            await _repository.Update(_mapper.Map<Customer>(model));
         }
     }
 }

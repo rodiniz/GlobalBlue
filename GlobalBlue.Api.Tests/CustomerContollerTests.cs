@@ -6,9 +6,9 @@ using GlobalBlue.Dtos;
 using GlobalBlue.Infrastructure.Services;
 using Microsoft.AspNetCore.Mvc;
 using NSubstitute;
-using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Mail;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -19,6 +19,7 @@ namespace GlobalBlue.Api.Tests
         private readonly Fixture fixture;
         private readonly CustomerController controller;
         public IBaseService<CustomerDto> _service;
+
         public CustomerContollerTests()
         {
             fixture = new Fixture();
@@ -27,13 +28,14 @@ namespace GlobalBlue.Api.Tests
             _service = Substitute.For<IBaseService<CustomerDto>>();
             controller = new CustomerController(_service);
         }
+
         [Fact]
         public void Should_return_a_list_ofcustomers_when_list_is_called()
         {
             // Arrange
             var customers = fixture.CreateMany<CustomerDto>(3).ToList();
             _service.GetAll().Returns(customers);
-            // Act          
+            // Act
 
             var result = controller.List();
 
@@ -42,14 +44,15 @@ namespace GlobalBlue.Api.Tests
             OkObjectResult res = result.Result as OkObjectResult;
             res.Value.Should().BeEquivalentTo(customers);
         }
+
         [Fact]
         public void Should_return_a_customer_when_get_is_called()
         {
             // Arrange
             var customer = fixture.Create<CustomerDto>();
-            int id=fixture.Create<int>();
+            int id = fixture.Create<int>();
             _service.Get(id).Returns(customer);
-            // Act          
+            // Act
 
             var result = controller.Get(id);
 
@@ -63,10 +66,12 @@ namespace GlobalBlue.Api.Tests
         public async Task Should_call_update_when_put_is_called()
         {
             // Arrange
-            var customer = fixture.Create<CustomerDto>();
-          
-          
-            // Act          
+            var customer = fixture.Build<CustomerDto>()
+               .With(c => c.Email, fixture.Create<MailAddress>().ToString())
+               .Create();
+
+            _service.Get(customer.Id).Returns(customer);
+            // Act
 
             var result = await controller.Put(customer);
 
@@ -74,17 +79,17 @@ namespace GlobalBlue.Api.Tests
 
             result.Should().BeOfType<OkResult>();
             await _service.Received(1).Update(customer);
-           
         }
 
         [Fact]
         public async Task Should_call_create_when_post_is_called()
         {
             // Arrange
-            var customer = fixture.Create<CustomerDto>();
+            var customer = fixture.Build<CustomerDto>()
+                    .With(c => c.Email, fixture.Create<MailAddress>().ToString())
+                    .Create();
 
-
-            // Act          
+            // Act
 
             var result = await controller.Post(customer);
 
@@ -92,8 +97,21 @@ namespace GlobalBlue.Api.Tests
 
             result.Should().BeOfType<OkObjectResult>();
             await _service.Received(1).Create(customer);
-
         }
 
+        [Fact]
+        public async Task Should_return_bad_request_when_email_is_invalid()
+        {
+            // Arrange
+            var customer = fixture.Create<CustomerDto>();
+
+            // Act
+
+            var result = await controller.Post(customer);
+
+            // Assert
+
+            result.Should().BeOfType<BadRequestObjectResult>();
+        }
     }
 }

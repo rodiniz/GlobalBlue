@@ -1,4 +1,5 @@
-﻿using GlobalBlue.Dtos;
+﻿using GlobalBlue.Api.Validators;
+using GlobalBlue.Dtos;
 using GlobalBlue.Infrastructure.Services;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -26,25 +27,30 @@ namespace GlobalBlue.Api.Controllers
             return Ok(model);
         }
 
-
         [HttpGet]
         [Route("Get")]
         public ActionResult<CustomerDto> Get(int id)
         {
+            var ret = _service.Get(id);
 
-            var ret= _service.Get(id);
-
-            return ret == null ? NotFound() as ActionResult: Ok(ret);
+            return ret == null ? NotFound() as ActionResult : Ok(ret);
         }
+
         [Route("update")]
         [HttpPut]
         public async Task<IActionResult> Put([FromBody] CustomerDto model)
         {
             try
             {
+                var validator = new CustomerValidator();
+                var result = await validator.ValidateAsync(model);
+                if (!result.IsValid)
+                {
+                    return BadRequest(result.Errors);
+                }
                 var ret = _service.Get(model.Id);
 
-                if(ret == null)
+                if (ret == null)
                 {
                     return NotFound();
                 }
@@ -52,7 +58,6 @@ namespace GlobalBlue.Api.Controllers
             }
             catch (Exception ex)
             {
-
                 return BadRequest(ex);
             }
 
@@ -65,23 +70,24 @@ namespace GlobalBlue.Api.Controllers
         {
             try
             {
+                var validator = new CustomerValidator();
+                var result = await validator.ValidateAsync(model);
+                if (!result.IsValid)
+                {
+                    return BadRequest(result.Errors);
+                }
 
-                var created=await _service.Create(model);
+                var created = await _service.Create(model);
                 return Ok(created);
             }
             catch (Exception ex)
             {
-
                 return BadRequest(ex);
             }
-
-
-
-            
         }
 
         [HttpDelete]
-        public async Task<IActionResult>  Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
             try
             {
@@ -89,13 +95,10 @@ namespace GlobalBlue.Api.Controllers
             }
             catch (Exception ex)
             {
-
                 return BadRequest(ex);
             }
-
 
             return Ok();
         }
     }
 }
-
