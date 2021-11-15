@@ -21,5 +21,4 @@ jobs:
       run: dotnet restore "../GlobalBlue/GlobalBlue.sln"
     - name: Build
       run: dotnet build  "../GlobalBlue/GlobalBlue.sln" --no-restore --verbosity normal
-    - name: Test
-      run: dotnet test "../GlobalBlue/GlobalBlue.sln"  --no-build --verbosity normal
+
