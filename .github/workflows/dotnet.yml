@@ -22,4 +22,4 @@ jobs:
     - name: Build
       run: dotnet build  "../GlobalBlue/GlobalBlue.sln" --no-restore --verbosity normal
     - name: Test
-      run: dotnet test --no-build --verbosity normal
+      run: dotnet test "../GlobalBlue/GlobalBlue.sln"  --no-build --verbosity normal
