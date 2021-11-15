@@ -18,7 +18,6 @@ namespace GlobalBlue.Infrastructure.Repository
         {
             _db.Set<T>().Add(entity);
             await _db.SaveChangesAsync();
-            _db.Entry(entity).Reload();
             return entity;
         }
 
@@ -37,7 +36,13 @@ namespace GlobalBlue.Infrastructure.Repository
 
         public T Get(int id)
         {
-            return _db.Set<T>().Find(id);
+            var entity = _db.Set<T>().Find(id);
+            if (entity == null)
+            {
+                return null;
+            }
+            _db.Entry(entity).State = EntityState.Detached;
+            return entity;
         }
 
         public IQueryable<T> Query()

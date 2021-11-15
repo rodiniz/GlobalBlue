@@ -56,5 +56,44 @@ namespace IntegrationTests
 
             Assert.NotEqual(0, created.Id);
         }
+        [Fact]
+        public async Task ShouldCreateUpdateAndDeleteCustomer()
+        {
+            // Arrange
+            var customer = _fixture.Build<CustomerDto>()
+                 .With(c => c.Email, _fixture.Create<MailAddress>().ToString())
+                 .Create();
+
+            // Act
+            var response = await _client.PostAsJsonAsync("/api/Customer/Create", customer);
+
+            // Assert
+            response.EnsureSuccessStatusCode();
+
+            var created = await response.Content.ReadFromJsonAsync<CustomerDto>();
+
+            // Act
+
+            created.FirstName = _fixture.Create<string>();
+            response = await _client.PutAsJsonAsync("/api/Customer/Update", created);
+
+            // Assert
+            response.EnsureSuccessStatusCode();
+
+
+
+            response = await _client.GetAsync($"/api/Customer/Get?id={created.Id}");
+            response.EnsureSuccessStatusCode();
+
+            var updated = await response.Content.ReadFromJsonAsync<CustomerDto>();
+            Assert.Equal(updated.FirstName, created.FirstName);
+
+            response = await _client.DeleteAsync($"/api/Customer?id={created.Id}");
+            response.EnsureSuccessStatusCode();
+
+            response = await _client.GetAsync($"/api/Customer/Get?id={created.Id}");
+            Assert.Equal(System.Net.HttpStatusCode.NotFound, response.StatusCode);
+
+        }
     }
 }
