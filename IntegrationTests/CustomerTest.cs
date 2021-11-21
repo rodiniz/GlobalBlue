@@ -12,15 +12,13 @@ namespace IntegrationTests
     public class BasicTests
     : IClassFixture<CustomWebApplicationFactory<Startup>>
     {
-        private readonly CustomWebApplicationFactory<Startup> _factory;
         private readonly Fixture _fixture;
         private readonly HttpClient _client;
 
         public BasicTests(CustomWebApplicationFactory<Startup> factory)
         {
-            _factory = factory;
             _fixture = new Fixture();
-            _client = _factory.CreateClient();
+            _client = factory.CreateClient();
         }
 
         [Theory]

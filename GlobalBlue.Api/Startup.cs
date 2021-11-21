@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using FluentValidation.AspNetCore;
 using GlobalBlue.Api.Validators;
 using GlobalBlue.Dtos;
@@ -14,6 +15,7 @@ using Microsoft.Extensions.Hosting;
 
 namespace GlobalBlue.Api
 {
+    [ExcludeFromCodeCoverage]
     public class Startup
     {
         public Startup(IConfiguration configuration)
@@ -34,8 +36,7 @@ namespace GlobalBlue.Api
             services.AddScoped<IBaseService<CustomerDto>, CustomerService>();
             services.AddAutoMapper(typeof(CustomerProfile));
             services.AddSwaggerGen();
-            services.AddMvc(options => options.Filters.Add(new ValidationFilter()))
-           .AddFluentValidation(options => options.RegisterValidatorsFromAssemblyContaining<Startup>());
+           
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

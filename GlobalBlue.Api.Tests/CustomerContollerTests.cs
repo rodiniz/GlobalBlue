@@ -113,5 +113,22 @@ namespace GlobalBlue.Api.Tests
 
             result.Should().BeOfType<BadRequestObjectResult>();
         }
+        
+        [Fact]
+        public async Task Should_call_delete_when_delete_is_called()
+        {
+            // Arrange
+            var id= fixture.Create<int>();
+            
+            // Act
+
+            var result = await controller.Delete(id);
+
+            // Assert
+
+            result.Should().BeOfType<OkResult>();
+            await _service.Received(1).Delete(id);
+        }
+        
     }
 }
