@@ -1,6 +1,7 @@
 ﻿using AutoFixture;
 using GlobalBlue.Api;
 using GlobalBlue.Dtos;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Net.Mail;
@@ -21,18 +22,22 @@ namespace IntegrationTests
             _client = factory.CreateClient();
         }
 
-        [Theory]
-        [InlineData("/api/Customer/List")]
-        public async Task Get_EndpointsReturnSuccessAndCorrectContentType(string url)
+        [Fact]
+        public async Task Get_EndpointsReturnSuccessAndCorrectContentType()
         {
+            //arrange
+            var customer = _fixture.Build<CustomerDto>()
+               .With(c => c.Email, _fixture.Create<MailAddress>().ToString())
+               .Create();
 
             // Act
-            var response = await _client.GetAsync(url);
+            await _client.PostAsJsonAsync("/api/Customer/Create", customer);
+
+            var response = await _client.GetFromJsonAsync<IEnumerable<CustomerDto>>("/api/Customer/List");
 
             // Assert
-            response.EnsureSuccessStatusCode(); // Status Code 200-299
-            Assert.Equal("application/json; charset=utf-8",
-                response.Content.Headers.ContentType.ToString());
+            Assert.Single(response);
+
         }
 
         [Fact]
@@ -93,5 +98,25 @@ namespace IntegrationTests
             Assert.Equal(System.Net.HttpStatusCode.NotFound, response.StatusCode);
 
         }
+      
+        [Fact]
+        public async Task ShouldCreateAndDeleteCustomer()
+        {
+            //create a customer
+            var customer = _fixture.Build<CustomerDto>()
+                 .With(c => c.Email, _fixture.Create<MailAddress>().ToString())
+                 .Create();
+            var response = await _client.PostAsJsonAsync("/api/Customer/Create", customer);
+            response.EnsureSuccessStatusCode();
+            //get the customer
+            var created = await response.Content.ReadFromJsonAsync<CustomerDto>();
+            
+            //delete the customer
+            response = await _client.DeleteAsync($"/api/Customer?id={created.Id}");
+            response.EnsureSuccessStatusCode();
+            
+            
+        }
+
     }
 }
