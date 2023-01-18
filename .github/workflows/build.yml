@@ -20,7 +20,7 @@ jobs:
         dotnet-version: 6.0.x
 
     - name: Restore Dependencies
-      run: dotnet restore GlobalBlue.sln.sln
+      run: dotnet restore GlobalBlue.sln
 
     - name: Build
       run: dotnet build GlobalBlue.sln --configuration Release --no-restore
