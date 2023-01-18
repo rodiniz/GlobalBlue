@@ -11,12 +11,12 @@ using Xunit;
 namespace IntegrationTests
 {
     public class BasicTests
-    : IClassFixture<CustomWebApplicationFactory<Startup>>
+    : IClassFixture<CustomWebApplicationFactory<Program>>
     {
         private readonly Fixture _fixture;
         private readonly HttpClient _client;
 
-        public BasicTests(CustomWebApplicationFactory<Startup> factory)
+        public BasicTests(CustomWebApplicationFactory<Program> factory)
         {
             _fixture = new Fixture();
             _client = factory.CreateClient();
@@ -98,7 +98,7 @@ namespace IntegrationTests
             Assert.Equal(System.Net.HttpStatusCode.NotFound, response.StatusCode);
 
         }
-      
+
         [Fact]
         public async Task ShouldCreateAndDeleteCustomer()
         {
@@ -110,12 +110,12 @@ namespace IntegrationTests
             response.EnsureSuccessStatusCode();
             //get the customer
             var created = await response.Content.ReadFromJsonAsync<CustomerDto>();
-            
+
             //delete the customer
             response = await _client.DeleteAsync($"/api/Customer?id={created.Id}");
             response.EnsureSuccessStatusCode();
-            
-            
+
+
         }
 
     }
