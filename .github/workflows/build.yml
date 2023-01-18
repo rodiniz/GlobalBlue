@@ -2,9 +2,9 @@ name: .Net 6 CI Build
 
 on:
   push:
-    branches: [ dotnet6 ]
+    branches: [ main ]
   pull_request:
-    branches: [ dotnet6 ]
+    branches: [ main ]
 
 jobs:
   build:
